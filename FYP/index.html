@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang ="en">
+  <head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="styles.css">
+  </head>
+
+<body>
+  <h1 id="title"><u>Final Year Project Test Site</u></h1>
+  <h2>This is a web-based CFD, utilising the two-dimensional steady heat flow equation</h2>
+  <canvas id="plate" width="470" height="470" style="border:1px solid "> </canvas>
+  <h3><u>What it does</u></h3>
+  <p>Each of the pixel within the canvas will have a random temperature and clicking the canvas will simulate the flow of heat through the canvas. A steady two-dimensional heat conduction in a region with heat generation and thermal conductivity can be expiressed in rectangular corrdinates with
+  the equation:</p>
+  <img src="img/eq1.png">
+  <p>A rectangular region with M equally spaced nodes in the x-direction and Nequally spaced nodes in the y-direction has a total od (M-1)(N-1) nodes and
+  the equation above can be used to obain the finite differences at all interior nodes. A square mesh can be used for simplicity and as such, &Delta;x &amp; 
+  &Delta; are taken to be the same. With that, &Delta;x = &Delta;y = <i>l</i> and the equation above can be simplified to:</p>
+  <img src="img/eq2.png">
+  <p>For this particular canvas, no heat is genereated within the medium, the equation can then be further simplified to be:</p>
+  <img src="img/eq3.png">
+<script>var requestAnimationFrame = window.requestAnimationFrame ||window.msRequestAnimationFrame ||
+    window.oRequestAnimationFrame || window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame;
+
+
+
+var c = 0;
+var i1, i2, j1, j2;
+var k=0;
+var plateCanvas = document.getElementById("plate");
+plateCanvas.addEventListener("mousedown", doMouseDown, false);
+var plateContext = plateCanvas.getContext("2d");
+var index;
+var temp = new Array();
+var row = 500;
+var col = 500;
+var TempMax = 800;
+var TempHigh;
+var TempLow;
+var diff;
+
+function test() {
+	
+    if (k == 0)
+        for (var i = 0; i < row; i++) {
+            temp[i] = new Array();
+            for (var j = 0; j < col; j++) {
+                temp[i][j] = Math.floor((Math.random() * 100) + 1) * TempMax;
+            }
+        }
+    if (k == 1) {
+        TempHigh = 0;
+        TempLow = TempMax;
+        for (var i = 0; i < row; i++)
+            for (var j = 0; j < col; j++) {
+                if (temp[i][j] > TempHigh)
+                    TempHigh = temp[i][j];
+                if (temp[i][j] < TempLow)
+                    TempHigh = temp[i][j];
+                diff= TempHigh - TempLow;
+            }
+    }
+    for (var i = 0; i < row; i++) {
+        i1 = i - 1;
+        i2 = i + 1;
+        if (i == 0)
+            i1 = row - 1;
+        if (i == row - 1)
+            i2 = 0;
+        for (var j = 0; j < col; j++) {
+            j1 = j - 1;
+            j2 = j + 1;
+            if (j == 0)
+                j1 = col - 1;
+            if (j == col - 1)
+                j2 = 0;
+            temp[i][j] = (temp[i1][j] + temp[i2][j] +
+                temp[i][j1] + temp[i][j2]) /4 ;
+            index = Math.floor((temp[i][j] - TempLow) / diff * 100);
+            if (true) {
+                if (index % 2 == 0)
+                    plateContext.fillStyle = "white";
+                else
+                    plateContext.fillStyle = "#FF0000";
+                plateContext.fillRect(i * 4, j * 4, 4, 4);
+            }
+        }
+    }
+    k++;
+    if (k > 1500) {
+        cancelAnimationFrame(test);
+        k = 0;
+        c++;
+    } else
+        requestAnimationFrame(test);
+}
+function doMouseDown(event) {
+    k = 0;
+    test();
+}
+</script>
+
+</body>
+</html>

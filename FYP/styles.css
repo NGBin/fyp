@@ -1,0 +1,25 @@
+body{
+	background-color: #fffff0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+h1{
+	text-align: center;
+	font-size: 175%;
+}
+
+h2{
+	text-align: center;
+	font-size: 150%;
+}
+
+
+
+#plate{
+	margin: auto;
+	display:block;
+}
+
+p{
+	text-align: justify;
+}
